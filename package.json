@@ -7,13 +7,9 @@
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
-    "dev": "npm run web:build && wrangler dev -c wrangler.toml",
-    "dev:worker": "wrangler dev -c wrangler.toml",
-    "web:dev": "vite --config webapp/vite.config.ts",
-    "web:build": "vite build --config webapp/vite.config.ts",
-    "web:typecheck": "tsc -p webapp/tsconfig.json --noEmit",
+    "dev": "wrangler dev -c wrangler.toml",
     "build": "vite build --config webapp/vite.config.ts",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "wrangler deploy"
   },
   "keywords": [
     "bitwarden",

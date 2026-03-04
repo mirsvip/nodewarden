@@ -257,7 +257,9 @@ function mapCipherEncrypted(cipher: Cipher): Record<string, unknown> {
     ? {
         privateKey: cipher.sshKey.privateKey ?? null,
         publicKey: cipher.sshKey.publicKey ?? null,
-        fingerprint: cipher.sshKey.fingerprint ?? null,
+        keyFingerprint: cipher.sshKey.keyFingerprint ?? cipher.sshKey.fingerprint ?? null,
+        // Keep legacy alias for compatibility with older importers.
+        fingerprint: cipher.sshKey.keyFingerprint ?? cipher.sshKey.fingerprint ?? null,
       }
     : null;
 
@@ -304,7 +306,22 @@ async function mapCipherPlain(cipher: Cipher, userEnc: Uint8Array, userMac: Uint
 
   out.card = cipher.card ? await deepDecryptUnknown(cipher.card, keyParts.enc, keyParts.mac) : null;
   out.identity = cipher.identity ? await deepDecryptUnknown(cipher.identity, keyParts.enc, keyParts.mac) : null;
-  out.sshKey = cipher.sshKey ? await deepDecryptUnknown(cipher.sshKey, keyParts.enc, keyParts.mac) : null;
+  if (cipher.sshKey) {
+    const fingerprint = await decryptMaybe(
+      cipher.sshKey.keyFingerprint ?? cipher.sshKey.fingerprint ?? null,
+      keyParts.enc,
+      keyParts.mac
+    );
+    out.sshKey = {
+      privateKey: await decryptMaybe(cipher.sshKey.privateKey ?? null, keyParts.enc, keyParts.mac),
+      publicKey: await decryptMaybe(cipher.sshKey.publicKey ?? null, keyParts.enc, keyParts.mac),
+      keyFingerprint: fingerprint,
+      // Keep legacy alias for compatibility with older importers.
+      fingerprint,
+    };
+  } else {
+    out.sshKey = null;
+  }
   out.secureNote = cipher.secureNote
     ? {
         type: normalizeNumber((cipher.secureNote as { type?: unknown }).type, 0),

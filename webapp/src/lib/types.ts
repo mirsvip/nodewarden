@@ -112,6 +112,7 @@ export interface CipherIdentity {
 export interface CipherSshKey {
   privateKey?: string | null;
   publicKey?: string | null;
+  keyFingerprint?: string | null;
   fingerprint?: string | null;
   decPrivateKey?: string;
   decPublicKey?: string;

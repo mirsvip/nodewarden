@@ -251,7 +251,7 @@ function importCipherToDraft(cipher: Record<string, unknown>, folderId: string |
     const sshKey = (cipher.sshKey || {}) as Record<string, unknown>;
     draft.sshPrivateKey = asText(sshKey.privateKey);
     draft.sshPublicKey = asText(sshKey.publicKey);
-    draft.sshFingerprint = asText(sshKey.fingerprint);
+    draft.sshFingerprint = asText(sshKey.keyFingerprint ?? sshKey.fingerprint);
   }
 
   return draft;
@@ -703,11 +703,14 @@ export default function App() {
               };
             }
             if (cipher.sshKey) {
+              const encryptedFingerprint = cipher.sshKey.keyFingerprint || cipher.sshKey.fingerprint || '';
               nextCipher.sshKey = {
                 ...cipher.sshKey,
                 decPrivateKey: await decryptField(cipher.sshKey.privateKey || '', itemEnc, itemMac),
                 decPublicKey: await decryptField(cipher.sshKey.publicKey || '', itemEnc, itemMac),
-                decFingerprint: await decryptField(cipher.sshKey.fingerprint || '', itemEnc, itemMac),
+                keyFingerprint: encryptedFingerprint || null,
+                fingerprint: encryptedFingerprint || null,
+                decFingerprint: await decryptField(encryptedFingerprint, itemEnc, itemMac),
               };
             }
             if (cipher.fields) {

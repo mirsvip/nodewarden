@@ -971,10 +971,13 @@ export async function createCipher(
       country: await encryptTextValue(draft.identCountry, enc, mac),
     };
   } else if (type === 5) {
+    const encryptedFingerprint = await encryptTextValue(draft.sshFingerprint, enc, mac);
     payload.sshKey = {
       privateKey: await encryptTextValue(draft.sshPrivateKey, enc, mac),
       publicKey: await encryptTextValue(draft.sshPublicKey, enc, mac),
-      fingerprint: await encryptTextValue(draft.sshFingerprint, enc, mac),
+      keyFingerprint: encryptedFingerprint,
+      // Keep legacy alias for backward compatibility with previously exported/edited items.
+      fingerprint: encryptedFingerprint,
     };
   } else if (type === 2) {
     payload.secureNote = { type: 0 };
@@ -1063,10 +1066,13 @@ export async function updateCipher(
       country: await encryptTextValue(draft.identCountry, keys.enc, keys.mac),
     };
   } else if (type === 5) {
+    const encryptedFingerprint = await encryptTextValue(draft.sshFingerprint, keys.enc, keys.mac);
     payload.sshKey = {
       privateKey: await encryptTextValue(draft.sshPrivateKey, keys.enc, keys.mac),
       publicKey: await encryptTextValue(draft.sshPublicKey, keys.enc, keys.mac),
-      fingerprint: await encryptTextValue(draft.sshFingerprint, keys.enc, keys.mac),
+      keyFingerprint: encryptedFingerprint,
+      // Keep legacy alias for backward compatibility with previously exported/edited items.
+      fingerprint: encryptedFingerprint,
     };
   } else if (type === 2) {
     payload.secureNote = { type: 0 };

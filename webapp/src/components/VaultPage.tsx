@@ -1461,9 +1461,33 @@ function folderName(id: string | null | undefined): string {
               {selectedCipher.sshKey && (
                 <div className="card">
                   <h4>{t('txt_ssh_key')}</h4>
-                  <div className="kv-line"><span>{t('txt_private_key')}</span><strong>{maskSecret(selectedCipher.sshKey.decPrivateKey || '')}</strong></div>
-                  <div className="kv-line"><span>{t('txt_public_key')}</span><strong>{selectedCipher.sshKey.decPublicKey || ''}</strong></div>
-                  <div className="kv-line"><span>{t('txt_fingerprint')}</span><strong>{selectedCipher.sshKey.decFingerprint || ''}</strong></div>
+                  <div className="kv-row">
+                    <span className="kv-label">{t('txt_private_key')}</span>
+                    <div className="kv-main">
+                      <strong className="value-ellipsis" title={maskSecret(selectedCipher.sshKey.decPrivateKey || '')}>
+                        {maskSecret(selectedCipher.sshKey.decPrivateKey || '')}
+                      </strong>
+                    </div>
+                    <div className="kv-actions" />
+                  </div>
+                  <div className="kv-row">
+                    <span className="kv-label">{t('txt_public_key')}</span>
+                    <div className="kv-main">
+                      <strong className="value-ellipsis" title={selectedCipher.sshKey.decPublicKey || ''}>
+                        {selectedCipher.sshKey.decPublicKey || ''}
+                      </strong>
+                    </div>
+                    <div className="kv-actions" />
+                  </div>
+                  <div className="kv-row">
+                    <span className="kv-label">{t('txt_fingerprint')}</span>
+                    <div className="kv-main">
+                      <strong className="value-ellipsis" title={selectedCipher.sshKey.decFingerprint || ''}>
+                        {selectedCipher.sshKey.decFingerprint || ''}
+                      </strong>
+                    </div>
+                    <div className="kv-actions" />
+                  </div>
                 </div>
               )}
 
